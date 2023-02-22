@@ -1,0 +1,17 @@
+# Folders
+.godot/
+.import/
+
+# Test project stuff
+project.godot
+icon.svg
+*.import
+**/*.import
+main.gd
+main.tscn
+
+# Test files stuff
+library.xml
+
+# Keep the addon icon
+!addons/godot_xml/icon.svg
