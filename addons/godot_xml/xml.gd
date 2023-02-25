@@ -15,7 +15,6 @@ enum XMLNodeType {
 ## Parses file content as XML into [XMLDocument].
 ## The file at a specified [code]path[/code] [b]must[/b] be readable.
 ## File content [b]must[/b] be a valid XML document.
-## Returns the parsed document.
 static func parse_file(path: String) -> XMLDocument:
 	var file = FileAccess.open(path, FileAccess.READ)
 	var xml: PackedByteArray = file.get_as_text().to_utf8_buffer()
@@ -26,18 +25,19 @@ static func parse_file(path: String) -> XMLDocument:
 
 ## Parses string as XML into [XMLDocument].
 ## String content [b]must[/b] be a valid XML document.
-## Returns the parsed document.
 static func parse_str(xml: String) -> XMLDocument:
 	return _parse(xml.to_utf8_buffer())
 
 
 ## Parses byte buffer as XML into [XMLDocument].
 ## Buffer content [b]must[/b] be a valid XML document.
-## Returns the parsed document.
 static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
 	return _parse(xml)
 
 
+## Dumps [param document] to the specified file.
+## The file at a specified [code]path[/code] [b]must[/b] be writeable.
+## Set [param beautify] to [code]true[/code] if you want indented output.
 static func dump_file(path: String, document: XMLDocument, beautify: bool = false):
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var xml: String = dump_str(document, beautify)
@@ -45,11 +45,15 @@ static func dump_file(path: String, document: XMLDocument, beautify: bool = fals
 	file = null
 
 
-static func dump_buffer(document: XMLDocument, beautify: bool = false):
+## Dumps [param document] to a [PackedByteArray].
+## Set [param beautify] to [code]true[/code] if you want indented output.
+static func dump_buffer(document: XMLDocument, beautify: bool = false) -> PackedByteArray:
 	return dump_str(document, beautify).to_utf8_buffer()
 
 
-static func dump_str(document: XMLDocument, beautify: bool = false):
+## Dumps [param document] to [String].
+## Set [param beautify] to [code]true[/code] if you want indented output.
+static func dump_str(document: XMLDocument, beautify: bool = false) -> String:
 	return _dump(document, beautify)
 
 
@@ -143,6 +147,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 	
 	return doc
 
+
 static func _make_node(queue: Array, parser: XMLParser):
 	var node_type = parser.get_node_type()
 
@@ -159,6 +164,7 @@ static func _make_node(queue: Array, parser: XMLParser):
 	#print(parser.get_node_data())
 	#print(parser.get_node_name())
 
+
 static func _make_node_element(parser: XMLParser):
 	var node: XMLNode = XMLNode.new()
 
@@ -169,6 +175,7 @@ static func _make_node_element(parser: XMLParser):
 	node.children = []
 
 	return node
+
 
 static func _make_node_element_end(parser: XMLParser) -> XMLNode:
 	var node: XMLNode = XMLNode.new()
@@ -181,9 +188,11 @@ static func _make_node_element_end(parser: XMLParser) -> XMLNode:
 
 	return node
 
+
 static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
 	if node.content.is_empty():
 		node.content = parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
+
 
 static func _get_attributes(parser: XMLParser) -> Dictionary:
 	var attrs: Dictionary = {}
