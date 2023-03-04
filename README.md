@@ -19,3 +19,11 @@ and are also listed before any internal function.
 
 All other functions and attributes are **not meant** to be used by you, though you
 can edit them as you like thanks to the license.
+
+## Roadmap
+
+- [ ] Allow dotted access for XMLNode's children;
+
+- [ ] Automatic detection and conversion of nodes' content type;
+
+- [ ] Setup automated tests.
