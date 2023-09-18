@@ -128,14 +128,12 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 		if node == null:
 			continue
 
-		var node_type = parser.get_node_type()
-		if node_type == XMLParser.NODE_ELEMENT_END and (queue.is_empty() || queue.back().name != node.name):
-			continue
-
 		if len(queue) == 0:
 			doc.root = node
 			queue.append(node)
 		else:
+			var node_type = parser.get_node_type()
+
 			if node_type == XMLParser.NODE_TEXT:
 				continue
 
@@ -152,11 +150,13 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 
 static func _make_node(queue: Array, parser: XMLParser):
 	var node_type = parser.get_node_type()
-
+	var node_name = parser.get_node_name()
 	match node_type:
 		XMLParser.NODE_ELEMENT:
 			return _make_node_element(parser)
 		XMLParser.NODE_ELEMENT_END:
+			if queue.is_empty() || queue.back().name != node_name:
+				return
 			return _make_node_element_end(parser)
 		XMLParser.NODE_TEXT:
 			if queue.is_empty():
