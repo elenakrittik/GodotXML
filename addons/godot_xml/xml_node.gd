@@ -28,6 +28,7 @@ func _to_string():
 	]
 
 
+# Dotted access via GDScript
 func _get(property: StringName):
 	if _node_props == null:
 		_initialize_node_properties()
@@ -36,6 +37,28 @@ func _get(property: StringName):
 		for child in children:
 			if child.name == property:
 				return child
+
+
+# Dotted access via editor
+func _get_property_list():
+	var props = []
+
+	if _node_props == null:
+		_initialize_node_properties()
+	
+	for child_name in _node_props:
+		var child = _get(child_name)
+
+		props.append({
+			"name": child_name,
+			"type": TYPE_OBJECT,
+			"class_name": "XMLNode",
+			"usage": PROPERTY_USAGE_DEFAULT,
+			"hint": PROPERTY_HINT_NONE,
+			"hint_string": "",
+		})
+	
+	return props
 
 
 func _initialize_node_properties():
