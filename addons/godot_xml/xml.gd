@@ -157,6 +157,8 @@ static func _make_node(queue: Array, parser: XMLParser):
 		XMLParser.NODE_ELEMENT_END:
 			return _make_node_element_end(parser)
 		XMLParser.NODE_TEXT:
+			if queue.is_empty():
+				return
 			_attach_node_data(queue.back(), parser)
 			return
 
