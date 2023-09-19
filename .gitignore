@@ -15,3 +15,4 @@ library.xml
 
 # Keep the addon icon
 !addons/godot_xml/icon.svg
+!addons/godot_xml/icon.png
