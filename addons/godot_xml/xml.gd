@@ -140,8 +140,15 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 			if node.standalone and not node_type == XMLParser.NODE_ELEMENT_END:
 				queue.back().children.append(node)
 			elif node_type == XMLParser.NODE_ELEMENT_END and not node.standalone:
-				queue.pop_back()
-				
+				var last = queue.pop_back()
+
+				if node.name != last.name:
+					push_error(
+						"Invalid closing tag: started with %s but ended with %s." % [last.name, node.name]\
+						+ "Stopping. Output may be invalid or incomplete."
+					)
+					break
+
 				if queue.is_empty():
 					break  # Ignore anything after the root is closed (multiple roots for example)
 			else:
