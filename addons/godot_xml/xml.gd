@@ -141,6 +141,9 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 				queue.back().children.append(node)
 			elif node_type == XMLParser.NODE_ELEMENT_END and not node.standalone:
 				queue.pop_back()
+				
+				if queue.is_empty():
+					break  # Ignore anything after the root is closed (multiple roots for example)
 			else:
 				queue.back().children.append(node)
 				queue.append(node)
@@ -157,6 +160,8 @@ static func _make_node(queue: Array, parser: XMLParser):
 		XMLParser.NODE_ELEMENT_END:
 			return _make_node_element_end(parser)
 		XMLParser.NODE_TEXT:
+			if queue.is_empty():
+				return
 			_attach_node_data(queue.back(), parser)
 			return
 
