@@ -118,15 +118,11 @@ static func _dump_node(node: XMLNode, closing: bool = false, beautify: bool = fa
 static func _parse(xml: PackedByteArray) -> XMLDocument:
 	var doc: XMLDocument = XMLDocument.new()
 	var queue: Array = []
-	var already_has_root = false
 
 	var parser: XMLParser = XMLParser.new()
 	parser.open_buffer(xml)
 
 	while parser.read() != ERR_FILE_EOF:
-		if already_has_root and queue.is_empty():
-			break  # Multiple roots are not supported (and are also not valid).
-
 		var node: XMLNode = _make_node(queue, parser)
 
 		if node == null:
@@ -135,7 +131,6 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 		if len(queue) == 0:
 			doc.root = node
 			queue.append(node)
-			already_has_root = true
 		else:
 			var node_type = parser.get_node_type()
 
@@ -146,6 +141,9 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 				queue.back().children.append(node)
 			elif node_type == XMLParser.NODE_ELEMENT_END and not node.standalone:
 				queue.pop_back()
+				
+				if queue.is_empty():
+					break  # Ignore anything after the root is closed (multiple roots for example)
 			else:
 				queue.back().children.append(node)
 				queue.append(node)
