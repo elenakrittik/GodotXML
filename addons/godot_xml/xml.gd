@@ -150,13 +150,10 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 
 static func _make_node(queue: Array, parser: XMLParser):
 	var node_type = parser.get_node_type()
-	var node_name = parser.get_node_name()
 	match node_type:
 		XMLParser.NODE_ELEMENT:
 			return _make_node_element(parser)
 		XMLParser.NODE_ELEMENT_END:
-			if queue.is_empty() or queue.back().name != node_name:
-				return
 			return _make_node_element_end(parser)
 		XMLParser.NODE_TEXT:
 			if queue.is_empty():
