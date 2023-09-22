@@ -6,6 +6,7 @@ class_name XML extends RefCounted
 
 ## Parses file content as XML into [XMLDocument].
 ## The file at a specified [code]path[/code] [b]must[/b] be readable.
+## File content [b]must[/b] be a syntactically valid XML document.
 static func parse_file(path: String) -> XMLDocument:
     var file = FileAccess.open(path, FileAccess.READ)
     var xml: PackedByteArray = file.get_as_text().to_utf8_buffer()
@@ -15,11 +16,13 @@ static func parse_file(path: String) -> XMLDocument:
 
 
 ## Parses string as XML into [XMLDocument].
+## File content [b]must[/b] be a syntactically valid XML document.
 static func parse_str(xml: String) -> XMLDocument:
     return _parse(xml.to_utf8_buffer())
 
 
 ## Parses byte buffer as XML into [XMLDocument].
+## File content [b]must[/b] be a syntactically valid XML document.
 static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
     return _parse(xml)
 
