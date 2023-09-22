@@ -2,6 +2,8 @@
 
 This addon adds support for manipulating XML data in Godot 4 with ease.
 
+> HINT: Migrating from v1? See [changelog](./CHANGELOG.md) for a complete list of breaking (and not) changes.
+
 ## Features
 
 - Pure-Godot - everything is done using built-in `XMLParser` and does not rely on external bindings*;
