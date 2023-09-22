@@ -14,8 +14,9 @@ This addon adds support for manipulating XML data in Godot 4 with ease.
 \* `XMLParser`, Godot's native, low-level XML parser that this addon works on top of, or, more specifically,
 `irrXML` (on which it is based), always assumes input to be trusted and valid, and therefore lacks both
 adequate error handling and adequate security measures. In case of error handling addon currently
-assumes that `XMLParser` does not have any bugs (which is false); in case of security we can't do anything
-unfortunately. Due to the above and our intention for this plugin to be usable in as much cases as possible, this addon will soon migrate to a custom, more modern XML library like Expat.
+implements a few workarounds that eliminate *known* godot bugs; in case of security we can't do anything
+unfortunately. Due to the above and our intention for this plugin to be usable in as much cases as possible,
+this addon will soon migrate to a custom, more modern XML library like Expat.
 
 Related issues on Godot's tracker:
 - https://github.com/godotengine/godot/issues/72517
