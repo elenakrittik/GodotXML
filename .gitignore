@@ -14,5 +14,5 @@ main.tscn
 library.xml
 
 # Keep the addon icon
-!addons/godot_xml/icon.svg
-!addons/godot_xml/icon.png
+!assets/icon.svg
+!assets/icon.png
