@@ -15,13 +15,13 @@ static func parse_file(path: String) -> XMLDocument:
     return _parse(xml)
 
 
-## Parses string as XML into [XMLDocument].
+## Parses string as XML into a [XMLDocument].
 ## String content [b]must[/b] be a syntactically valid XML document.
 static func parse_str(xml: String) -> XMLDocument:
     return _parse(xml.to_utf8_buffer())
 
 
-## Parses byte buffer as XML into [XMLDocument].
+## Parses byte buffer as XML into a [XMLDocument].
 ## Buffer content [b]must[/b] be a syntactically valid XML document.
 static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
     return _parse(xml)
