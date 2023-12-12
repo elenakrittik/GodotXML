@@ -1,4 +1,4 @@
-## Represents an XML element (AKA XML node). Hint: if there's only single child with
+## Represents an XML element (AKA XML node). Hint: if there's only one child with
 ## the same name, you can access it via [code]this_node.my_child_name[/code]!
 class_name XMLNode extends RefCounted
 
@@ -21,10 +21,10 @@ var _node_props = null  # Array[String]
 
 
 ## Converts this node (and all of it's children) into a [Dictionary].
-## Name is set directly as [code]__name__: name[/code].
-## Content is set directly as [code]__content__: content[/code].
-## Attributes are set directly as [code]attrs: {attr_name: attr_value}[/code].
-## Children are set directly as [code]children: {child_name: child_dict}[/code].
+## Name is set as [code]__name__: name[/code].
+## Content is set as [code]__content__: content[/code].
+## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
+## Children are set as [code]children: {child_name: child_dict}[/code].
 func to_dict() -> Dictionary:
     var output = {}
 
