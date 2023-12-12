@@ -4,8 +4,8 @@
 class_name XML extends RefCounted
 
 
-## Parses file content as XML into [XMLDocument].
-## The file at a specified [code]path[/code] [b]must[/b] be readable.
+## Parses file content as XML into a [XMLDocument].
+## The file at the specified [code]path[/code] [b]must[/b] be readable.
 ## File content [b]must[/b] be a syntactically valid XML document.
 static func parse_file(path: String) -> XMLDocument:
     var file = FileAccess.open(path, FileAccess.READ)
@@ -16,13 +16,13 @@ static func parse_file(path: String) -> XMLDocument:
 
 
 ## Parses string as XML into [XMLDocument].
-## File content [b]must[/b] be a syntactically valid XML document.
+## String content [b]must[/b] be a syntactically valid XML document.
 static func parse_str(xml: String) -> XMLDocument:
     return _parse(xml.to_utf8_buffer())
 
 
 ## Parses byte buffer as XML into [XMLDocument].
-## File content [b]must[/b] be a syntactically valid XML document.
+## Buffer content [b]must[/b] be a syntactically valid XML document.
 static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
     return _parse(xml)
 
@@ -56,7 +56,7 @@ static func dump_buffer(
     return dump_str(document, pretty, indent_level, indent_length).to_utf8_buffer()
 
 
-## Dumps [param document] to [String].
+## Dumps [param document] to a [String].
 ## Set [param pretty] to [code]true[/code] if you want indented output.
 ## If [param pretty] is [code]true[/code], [param indent_level] controls the initial indentation level.
 ## If [param pretty] is [code]true[/code], [param indent_length] controls the length of a single indentation level.
@@ -190,8 +190,8 @@ static func _make_node_element_end(parser: XMLParser) -> XMLNode:
 
 static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
     if node.content.is_empty():
-        # XMLParser treats even blank stuff between nodes as NODE_TEXT, which is at least incorrect
-        # therefore we strip blankets, resulting in only actual content slipping into .content
+        # XMLParser treats blank stuff between nodes as NODE_TEXT, which is kind of incorrect
+        # we therefore strip "blankets", resulting in only actual content slipping into .content
         node.content = parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
 
 
