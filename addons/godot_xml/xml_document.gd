@@ -1,7 +1,7 @@
 ## Represents an XML document.
 class_name XMLDocument extends RefCounted
 
-## The XML root node.
+## The root XML node.
 var root: XMLNode
 
 
