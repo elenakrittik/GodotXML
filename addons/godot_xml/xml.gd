@@ -199,9 +199,11 @@ static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
         # we therefore strip "blankets", resulting in only actual content slipping into .content
         node.content = parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
 
-static func _attach_node_name(node: XMLNode, parser: XMLParser) -> void:
-    if node.content.is_empty():
-        node.content = parser.get_node_name().strip_edges().lstrip(" ").rstrip(" ")
+static func _attach_node_cdata(node: XMLNode, parser: XMLParser) -> void:
+    # WARNING: The current implementation of XMLParser.get_node_name() does not raise an error for nodes of type NODE_CDATA.
+    # Instead, it returns the CDATA content. This behavior is undocumented and may change in future versions of Godot.
+    # It is recommended to open an issue on the Godot repository to address this inconsistency.
+    node.cdata.append(parser.get_node_name().strip_edges().lstrip(" ").rstrip(" "))
 
 static func _get_attributes(parser: XMLParser) -> Dictionary:
     var attrs: Dictionary = {}
