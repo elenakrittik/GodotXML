@@ -17,7 +17,7 @@ var standalone: bool = false
 ## XML node's children.
 var children: Array[XMLNode] = []
 
-var _node_props = null  # Array[String]
+var _node_props: Array[String]
 
 
 ## Converts this node (and all of it's children) into a [Dictionary].
@@ -26,14 +26,15 @@ var _node_props = null  # Array[String]
 ## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
 ## Children are set as [code]children: {child_name: child_dict}[/code].
 func to_dict() -> Dictionary:
-    var output = {}
+    var output := {}
 
-    output["__name__"] = name
-    output["__content__"] = content
-    output["attrs"] = attributes
+    output["__name__"] = self.name
+    output["__content__"] = self.content
+    output["attrs"] = self.attributes
 
-    var children_dict = {}
-    for child in children:
+    var children_dict := {}
+
+    for child in self.children:
         children_dict[child.name] = child.to_dict()
 
     output["children"] = children_dict
@@ -48,9 +49,9 @@ func dump_file(
     pretty: bool = false,
     indent_level: int = 0,
     indent_length: int = 2,
-):
+) -> void:
     var file = FileAccess.open(path, FileAccess.WRITE)
-    var xml: String = dump_str(pretty, indent_level, indent_length)
+    var xml: String = self.dump_str(pretty, indent_level, indent_length)
     file.store_string(xml)
     file = null
 
@@ -87,34 +88,34 @@ func dump_str(
 
 func _to_string():
     return "<XMLNode name=%s attributes=%s content=%s standalone=%s children=%s>" % [
-        name,
-        "{...}" if len(attributes) > 0 else "{}",
-        '"..."' if len(content) > 0 else '""',
-        str(standalone),
-        "[...]" if len(children) > 0 else "[]"
+        self.name,
+        "{...}" if len(self.attributes) > 0 else "{}",
+        '"..."' if len(self.content) > 0 else '""',
+        self.standalone,
+        "[...]" if len(self.children) > 0 else "[]"
     ]
 
 
 # Dotted access via GDScript
 func _get(property: StringName):
-    if _node_props == null:
+    if self._node_props == null:
         _initialize_node_properties()
 
-    if property not in ["name", "attributes", "content", "standalone", "children"] and property in _node_props:
-        for child in children:
+    if property not in ["name", "attributes", "content", "standalone", "children"] and property in self._node_props:
+        for child in self.children:
             if child.name == property:
                 return child
 
 
 # Dotted access via editor
 func _get_property_list():
-    var props = []
+    var props: Array[Dictionary] = []
 
-    if _node_props == null:
-        _initialize_node_properties()
-    
-    for child_name in _node_props:
-        var child = _get(child_name)
+    if self._node_props == null:
+        self._initialize_node_properties()
+
+    for child_name in self._node_props:
+        var child = self._get(child_name)
 
         props.append({
             "name": child_name,
@@ -131,7 +132,7 @@ func _get_property_list():
 func _initialize_node_properties():
     var names_to_nodes = {}
 
-    for child in children:
+    for child in self.children:
         if not child.name in names_to_nodes.keys():
             names_to_nodes[child.name] = child
         else:
@@ -143,26 +144,26 @@ func _initialize_node_properties():
 func _dump() -> String:
     var template = (
         "<{node_name}{attributes}>{content}{children}</{node_name}>"
-        if not standalone else
+        if not self.standalone else
         "<{node_name}{attributes}/>"
     )
     var attribute_string = ""
     var children_string = ""
 
-    if not attributes.is_empty():
+    if not self.attributes.is_empty():
         attribute_string += " "
 
-        for attribute_key in attributes:
-            var attribute_value = attributes.get(attribute_key)
+        for attribute_key in self.attributes:
+            var attribute_value = self.attributes.get(attribute_key)
             attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
-    for child in children:
+    for child in self.children:
         children_string += child._dump()
 
     return template.format({
-        "node_name": name,
+        "node_name": self.name,
         "attributes": attribute_string,
-        "content": content,
+        "content": self.content,
         "children": children_string,
     })
 
@@ -170,30 +171,29 @@ func _dump() -> String:
 func _dump_pretty(indent_level: int, indent_length: int) -> String:
         var template = (
             "{indent}<{node_name}{attributes}>{content}{children}\n{indent}</{node_name}>"
-            if not standalone else
+            if not self.standalone else
             "{indent}<{node_name}{attributes}/>"
         )
         var indent_string = " ".repeat(indent_level * indent_length)
         var indent_next_string = indent_string + " ".repeat(indent_length)
         var attribute_string = ""
-        var content_string = "\n" + indent_next_string + content if not content.is_empty() else ""
+        var content_string = "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
         var children_string = ""
 
-        if not attributes.is_empty():
+        if not self.attributes.is_empty():
             attribute_string += " "
 
-            for attribute_key in attributes:
-                var attribute_value = attributes.get(attribute_key)
+            for attribute_key in self.attributes:
+                var attribute_value = self.attributes.get(attribute_key)
                 attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
     
-        for child in children:
-            children_string += "\n" + child._dump_pretty(indent_level + 1, indent_length)
+        for child in self.children:
+            children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
 
         return template.format({
-            "node_name": name,
+            "node_name": self.name,
             "attributes": attribute_string,
             "content": content_string,
             "children": children_string,
-
             "indent": indent_string,
         })
