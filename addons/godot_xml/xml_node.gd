@@ -40,6 +40,50 @@ func to_dict() -> Dictionary:
 
     return output
 
+## Dumps this node to the specified file.
+## The file at the specified [code]path[/code] [b]must[/b] be writeable.
+## See [method XMLNode.dump_str] for further documentation.
+func dump_file(
+    path: String,
+    pretty: bool = false,
+    indent_level: int = 0,
+    indent_length: int = 2,
+):
+    var file = FileAccess.open(path, FileAccess.WRITE)
+    var xml: String = dump_str(pretty, indent_level, indent_length)
+    file.store_string(xml)
+    file = null
+
+
+## Dumps this node to a [PackedByteArray].
+## See [method XMLNode.dump_str] for further documentation.
+func dump_buffer(
+    pretty: bool = false,
+    indent_level: int = 0,
+    indent_length: int = 2,
+) -> PackedByteArray:
+    return self.dump_str(pretty, indent_level, indent_length).to_utf8_buffer()
+
+
+## Dumps this node to a [String].
+## Set [param pretty] to [code]true[/code] if you want indented output.
+## If [param pretty] is [code]true[/code], [param indent_level] controls the initial indentation level.
+## If [param pretty] is [code]true[/code], [param indent_length] controls the length of a single indentation level.
+func dump_str(
+    pretty: bool = false,
+    indent_level: int = 0,
+    indent_length: int = 2,
+) -> String:
+    if indent_level < 0:
+        push_warning("indent_level must be >= 0")
+        indent_level = 0
+
+    if indent_length < 0:
+        push_warning("indent_length must be >= 0")
+        indent_length = 0
+
+    return self._dump() if not pretty else self._dump_pretty(indent_level, indent_length)
+
 
 func _to_string():
     return "<XMLNode name=%s attributes=%s content=%s standalone=%s children=%s>" % [

@@ -28,53 +28,43 @@ static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
 
 
 ## Dumps [param document] to the specified file.
-## The file at a specified [code]path[/code] [b]must[/b] be writeable.
-## Set [param pretty] to [code]true[/code] if you want indented output.
-## If [param pretty] is [code]true[/code], [param indent_level] controls the initial indentation level.
-## If [param pretty] is [code]true[/code], [param indent_length] controls the length of a single indentation level.
-static func dump_file(path: String, document: XMLDocument,
+## See [method XMLNode.dump_file] for further documentation.
+##
+## @deprecated: Use [method XMLNode.dump_file] directly.
+static func dump_file(
+    path: String,
+    document: XMLDocument,
     pretty: bool = false,
     indent_level: int = 0,
     indent_length: int = 2,
 ):
-    var file = FileAccess.open(path, FileAccess.WRITE)
-    var xml: String = dump_str(document, pretty, indent_level, indent_length)
-    file.store_string(xml)
-    file = null
+    return document.root.dump_file(path, pretty, indent_level, indent_length)
 
 
 ## Dumps [param document] to a [PackedByteArray].
-## Set [param pretty] to [code]true[/code] if you want indented output.
-## If [param pretty] is [code]true[/code], [param indent_level] controls the initial indentation level.
-## If [param pretty] is [code]true[/code], [param indent_length] controls the length of a single indentation level.
+## See [method XMLNode.dump_buffer] for further documentation.
+##
+## @deprecated: Use [method XMLNode.dump_buffer] directly.
 static func dump_buffer(
     document: XMLDocument,
     pretty: bool = false,
     indent_level: int = 0,
     indent_length: int = 2,
 ) -> PackedByteArray:
-    return dump_str(document, pretty, indent_level, indent_length).to_utf8_buffer()
+    return document.root.dump_buffer(pretty, indent_level, indent_length)
 
 
 ## Dumps [param document] to a [String].
-## Set [param pretty] to [code]true[/code] if you want indented output.
-## If [param pretty] is [code]true[/code], [param indent_level] controls the initial indentation level.
-## If [param pretty] is [code]true[/code], [param indent_length] controls the length of a single indentation level.
-static func dump_str(document: XMLDocument,
+## See [method XMLNode.dump_str] for further documentation.
+##
+## @deprecated: Use [method XMLNode.dump_str] directly.
+static func dump_str(
+    document: XMLDocument,
     pretty: bool = false,
     indent_level: int = 0,
     indent_length: int = 2,
 ) -> String:
-    if indent_level < 0:
-        push_warning("indent_level must be >= 0")
-        indent_level = 0
-
-    if indent_length < 0:
-        push_warning("indent_length must be >= 0")
-        indent_length = 0
-    
-    return document.root._dump() if not pretty else document.root._dump_pretty(indent_level, indent_length)
-
+    return document.root.dump_str(pretty, indent_level, indent_length)
 
 
 static func _parse(xml: PackedByteArray) -> XMLDocument:
