@@ -103,13 +103,13 @@ func _initialize_node_properties():
 
 func _dump() -> String:
     var template = (
-        "<{node_name}{attributes}>{content}{children}</{node_name}>"
+        "<{node_name}{attributes}>{content}{children}{cdata_nodes}</{node_name}>"
         if not standalone else
         "<{node_name}{attributes}/>"
     )
     var attribute_string = ""
     var children_string = ""
-
+    var cdata_nodes = ""
     if not attributes.is_empty():
         attribute_string += " "
 
@@ -120,41 +120,49 @@ func _dump() -> String:
     for child in children:
         children_string += child._dump()
 
+    for cdata_content in cdata:
+        cdata_nodes += cdata_content
+
     return template.format({
         "node_name": name,
         "attributes": attribute_string,
         "content": content,
         "children": children_string,
+        "cdata_nodes": cdata_nodes,
     })
 
 
 func _dump_pretty(indent_level: int, indent_length: int) -> String:
-        var template = (
-            "{indent}<{node_name}{attributes}>{content}{children}\n{indent}</{node_name}>"
-            if not standalone else
-            "{indent}<{node_name}{attributes}/>"
-        )
-        var indent_string = " ".repeat(indent_level * indent_length)
-        var indent_next_string = indent_string + " ".repeat(indent_length)
-        var attribute_string = ""
-        var content_string = "\n" + indent_next_string + content if not content.is_empty() else ""
-        var children_string = ""
+    var template = (
+        "{indent}<{node_name}{attributes}>{content}{children}{cdata_nodes}\n{indent}</{node_name}>"
+        if not standalone else
+        "{indent}<{node_name}{attributes}/>"
+    )
+    var indent_string = " ".repeat(indent_level * indent_length)
+    var indent_next_string = indent_string + " ".repeat(indent_length)
+    var attribute_string = ""
+    var content_string = "\n" + indent_next_string + content if not content.is_empty() else ""
+    var children_string = ""
+    var cdata_nodes = ""
 
-        if not attributes.is_empty():
-            attribute_string += " "
+    if not attributes.is_empty():
+        attribute_string += " "
 
-            for attribute_key in attributes:
-                var attribute_value = attributes.get(attribute_key)
-                attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
+        for attribute_key in attributes:
+            var attribute_value = attributes.get(attribute_key)
+            attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
     
-        for child in children:
-            children_string += "\n" + child._dump_pretty(indent_level + 1, indent_length)
+    for child in children:
+        children_string += "\n" + child._dump_pretty(indent_level + 1, indent_length)
 
-        return template.format({
-            "node_name": name,
-            "attributes": attribute_string,
-            "content": content_string,
-            "children": children_string,
+    for cdata_content in cdata:
+        cdata_nodes += "\n" + indent_next_string + cdata_content
 
-            "indent": indent_string,
-        })
+    return template.format({
+        "node_name": name,
+        "attributes": attribute_string,
+        "content": content_string,
+        "children": children_string,
+        "cdata_nodes": cdata_nodes,
+        "indent": indent_string,
+    })
