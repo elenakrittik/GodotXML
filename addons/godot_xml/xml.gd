@@ -165,7 +165,7 @@ static func _make_node(queue: Array, parser: XMLParser):
         XMLParser.NODE_CDATA:
             if queue.is_empty():
                 return
-            _attach_node_name(queue.back(), parser)
+            _attach_node_cdata(queue.back(), parser)
             return
 
 

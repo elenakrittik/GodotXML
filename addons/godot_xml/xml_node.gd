@@ -11,7 +11,7 @@ var attributes: Dictionary = {}
 ## XML node content.
 var content: String = ""
 
-## XML node CData.
+## XML node CDATA.
 var cdata: Array[String] = []
 
 ## Whether the XML node is an empty node (AKA standalone node).
@@ -26,7 +26,7 @@ var _node_props = null  # Array[String]
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
 ## Content is set as [code]__content__: content[/code].
-## CData is set as [code]__cdata__: cdata[/code].
+## CDATA is set as [code]__cdata__: [cdata, ...][/code].
 ## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
 ## Children are set as [code]children: {child_name: child_dict}[/code].
 func to_dict() -> Dictionary:
