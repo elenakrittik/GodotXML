@@ -18,7 +18,7 @@ var standalone: bool = false
 var children: Array[XMLNode] = []
 
 var _node_props: Array[String]
-
+const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "standalone", "children"]
 
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
@@ -99,10 +99,10 @@ func _to_string():
 # Dotted access via GDScript
 func _get(property: StringName):
     if self._node_props == null:
-        _initialize_node_properties()
+        self._initialize_node_properties()
 
     if (
-        property not in ["name", "attributes", "content", "standalone", "children"]
+        property not in KNOWN_PROPERTIES
         and property in self._node_props
     ):
         for child in self.children:
@@ -118,8 +118,6 @@ func _get_property_list() -> Array[Dictionary]:
         self._initialize_node_properties()
 
     for child_name in self._node_props:
-        var child = self._get(child_name)
-
         props.append({
             "name": child_name,
             "type": TYPE_OBJECT,
@@ -141,7 +139,7 @@ func _initialize_node_properties() -> void:
         else:
             names_to_nodes.erase(child.name)
 
-    _node_props = names_to_nodes.keys() as Array[String]
+    self._node_props = names_to_nodes.keys() as Array[String]
 
 
 func _dump() -> String:
