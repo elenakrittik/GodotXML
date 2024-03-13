@@ -187,10 +187,9 @@ static func _make_node_element_end(parser: XMLParser) -> XMLNode:
 
 
 static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
-    if node.content.is_empty():
-        # XMLParser treats blank stuff between nodes as NODE_TEXT, which is kind of incorrect
-        # we therefore strip "blankets", resulting in only actual content slipping into .content
-        node.content = parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
+    # XMLParser treats blank stuff between nodes as NODE_TEXT, which is unwanted
+    # we therefore strip "blankets", resulting in only actual content slipping into .content
+    node.content += parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
 
 static func _attach_node_cdata(node: XMLNode, parser: XMLParser) -> void:
     node.cdata.append(parser.get_node_name().strip_edges().lstrip(" ").rstrip(" "))
