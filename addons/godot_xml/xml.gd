@@ -101,7 +101,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 
             # same here
             elif node_type == XMLParser.NODE_ELEMENT_END:
-                var last = queue.pop_back()  # get-remove last unclosed node
+                var last := queue.pop_back()  # get-remove last unclosed node
 
                 # if we got a closing node, but it's name is not the same as opening one, it's an error
                 if node.name != last.name:
@@ -139,7 +139,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 
 
 # TODO: add "-> XMLNode | null" when unions are supported
-static func _make_node(queue: Array, parser: XMLParser):
+static func _make_node(queue: Array[XMLNode], parser: XMLParser) -> Variant:
     var node_type := parser.get_node_type()
 
     match node_type:
@@ -153,6 +153,8 @@ static func _make_node(queue: Array, parser: XMLParser):
                 return
             XML._attach_node_data(queue.back(), parser)
             return
+
+    return
 
 
 static func _make_node_element(parser: XMLParser) -> XMLNode:

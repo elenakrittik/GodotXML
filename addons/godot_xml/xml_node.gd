@@ -101,14 +101,17 @@ func _get(property: StringName):
     if self._node_props == null:
         _initialize_node_properties()
 
-    if property not in ["name", "attributes", "content", "standalone", "children"] and property in self._node_props:
+    if (
+        property not in ["name", "attributes", "content", "standalone", "children"]
+        and property in self._node_props
+    ):
         for child in self.children:
             if child.name == property:
                 return child
 
 
 # Dotted access via editor
-func _get_property_list():
+func _get_property_list() -> Array[Dictionary]:
     var props: Array[Dictionary] = []
 
     if self._node_props == null:
@@ -129,35 +132,35 @@ func _get_property_list():
     return props
 
 
-func _initialize_node_properties():
-    var names_to_nodes = {}
+func _initialize_node_properties() -> void:
+    var names_to_nodes := {}
 
-    for child in self.children:
+    for child: XMLNode in self.children:
         if not child.name in names_to_nodes.keys():
             names_to_nodes[child.name] = child
         else:
             names_to_nodes.erase(child.name)
 
-    _node_props = names_to_nodes.keys()
+    _node_props = names_to_nodes.keys() as Array[String]
 
 
 func _dump() -> String:
-    var template = (
+    var template := (
         "<{node_name}{attributes}>{content}{children}</{node_name}>"
         if not self.standalone else
         "<{node_name}{attributes}/>"
     )
-    var attribute_string = ""
-    var children_string = ""
+    var attribute_string := ""
+    var children_string := ""
 
     if not self.attributes.is_empty():
         attribute_string += " "
 
         for attribute_key in self.attributes:
-            var attribute_value = self.attributes.get(attribute_key)
+            var attribute_value := self.attributes.get(attribute_key)
             attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
-    for child in self.children:
+    for child: XMLNode in self.children:
         children_string += child._dump()
 
     return template.format({
@@ -169,25 +172,25 @@ func _dump() -> String:
 
 
 func _dump_pretty(indent_level: int, indent_length: int) -> String:
-        var template = (
+        var template := (
             "{indent}<{node_name}{attributes}>{content}{children}\n{indent}</{node_name}>"
             if not self.standalone else
             "{indent}<{node_name}{attributes}/>"
         )
-        var indent_string = " ".repeat(indent_level * indent_length)
-        var indent_next_string = indent_string + " ".repeat(indent_length)
-        var attribute_string = ""
-        var content_string = "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
-        var children_string = ""
+        var indent_string := " ".repeat(indent_level * indent_length)
+        var indent_next_string := indent_string + " ".repeat(indent_length)
+        var attribute_string := ""
+        var content_string := "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
+        var children_string := ""
 
         if not self.attributes.is_empty():
             attribute_string += " "
 
             for attribute_key in self.attributes:
-                var attribute_value = self.attributes.get(attribute_key)
+                var attribute_value := self.attributes.get(attribute_key)
                 attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
     
-        for child in self.children:
+        for child: XMLNode in self.children:
             children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
 
         return template.format({
