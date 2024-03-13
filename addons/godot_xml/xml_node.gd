@@ -20,7 +20,8 @@ var standalone: bool = false
 ## XML node's children.
 var children: Array[XMLNode] = []
 
-var _node_props: Array[String]
+var _node_props: Array
+var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
 ## Converts this node (and all of it's children) into a [Dictionary].
@@ -104,7 +105,7 @@ func _to_string():
 
 # Dotted access via GDScript
 func _get(property: StringName):
-    if self._node_props == null:
+    if not self._node_props_initialized:
         self._initialize_node_properties()
 
     if (
@@ -120,7 +121,7 @@ func _get(property: StringName):
 func _get_property_list() -> Array[Dictionary]:
     var props: Array[Dictionary] = []
 
-    if self._node_props == null:
+    if not self._node_props_initialized:
         self._initialize_node_properties()
 
     for child_name in self._node_props:
@@ -145,7 +146,8 @@ func _initialize_node_properties() -> void:
         else:
             names_to_nodes.erase(child.name)
 
-    self._node_props = names_to_nodes.keys() as Array[String]
+    self._node_props = names_to_nodes.keys()
+    self._node_props_initialized = true
 
 
 func _dump() -> String:
