@@ -12,19 +12,19 @@ static func parse_file(path: String) -> XMLDocument:
     var xml: PackedByteArray = file.get_as_text().to_utf8_buffer()
     file = null
 
-    return _parse(xml)
+    return XML._parse(xml)
 
 
 ## Parses string as XML into a [XMLDocument].
 ## String content [b]must[/b] be a syntactically valid XML document.
 static func parse_str(xml: String) -> XMLDocument:
-    return _parse(xml.to_utf8_buffer())
+    return XML._parse(xml.to_utf8_buffer())
 
 
 ## Parses byte buffer as XML into a [XMLDocument].
 ## Buffer content [b]must[/b] be a syntactically valid XML document.
 static func parse_buffer(xml: PackedByteArray) -> XMLDocument:
-    return _parse(xml)
+    return XML._parse(xml)
 
 
 ## Dumps [param document] to the specified file.
@@ -37,7 +37,7 @@ static func dump_file(
     pretty: bool = false,
     indent_level: int = 0,
     indent_length: int = 2,
-):
+) -> void:
     return document.root.dump_file(path, pretty, indent_level, indent_length)
 
 
@@ -70,10 +70,10 @@ static func dump_str(
 static func _parse(xml: PackedByteArray) -> XMLDocument:
     xml = _cleanup_double_blankets(xml)  # see comment in function body
 
-    var doc: XMLDocument = XMLDocument.new()
-    var queue: Array = []  # queue of unclosed tags
+    var doc := XMLDocument.new()
+    var queue: Array[XMLNode] = []  # queue of unclosed tags
 
-    var parser: XMLParser = XMLParser.new()
+    var parser := XMLParser.new()
     parser.open_buffer(xml)
 
     while parser.read() != ERR_FILE_EOF:
@@ -88,7 +88,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
             doc.root = node
             queue.append(node)
         else:
-            var node_type = parser.get_node_type()
+            var node_type := parser.get_node_type()
 
             # below, `queue.back().children.append(...)` means:
             # - take the last node
@@ -101,7 +101,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
 
             # same here
             elif node_type == XMLParser.NODE_ELEMENT_END:
-                var last = queue.pop_back()  # get-remove last unclosed node
+                var last := queue.pop_back()  # get-remove last unclosed node
 
                 # if we got a closing node, but it's name is not the same as opening one, it's an error
                 if node.name != last.name:
@@ -128,7 +128,7 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
     # if parsing ended, but there are still unclosed nodes, we report it
     if not queue.is_empty():
         queue.reverse()
-        var names = []
+        var names: Array[String] = []
 
         for node in queue:
             names.append(node.name)
@@ -138,19 +138,20 @@ static func _parse(xml: PackedByteArray) -> XMLDocument:
     return doc
 
 
-static func _make_node(queue: Array, parser: XMLParser):
-    var node_type = parser.get_node_type()
+# TODO: add "-> XMLNode | null" when unions are supported
+static func _make_node(queue: Array[XMLNode], parser: XMLParser) -> Variant:
+    var node_type := parser.get_node_type()
 
     match node_type:
         XMLParser.NODE_ELEMENT:
-            return _make_node_element(parser)
+            return XML._make_node_element(parser)
         XMLParser.NODE_ELEMENT_END:
-            return _make_node_element_end(parser)
+            return XML._make_node_element_end(parser)
         XMLParser.NODE_TEXT:
             # ignores blank text before root node; it is easier this way, trust me
             if queue.is_empty():
                 return
-            _attach_node_data(queue.back(), parser)
+            XML._attach_node_data(queue.back(), parser)
             return
         XMLParser.NODE_CDATA:
             if queue.is_empty():
@@ -158,12 +159,14 @@ static func _make_node(queue: Array, parser: XMLParser):
             _attach_node_cdata(queue.back(), parser)
             return
 
+    return
 
-static func _make_node_element(parser: XMLParser):
-    var node: XMLNode = XMLNode.new()
+
+static func _make_node_element(parser: XMLParser) -> XMLNode:
+    var node := XMLNode.new()
 
     node.name = parser.get_node_name()
-    node.attributes = _get_attributes(parser)
+    node.attributes = XML._get_attributes(parser)
     node.content = ""
     node.standalone = parser.is_empty()  # see .is_empty() docs
     node.children = []
@@ -172,7 +175,7 @@ static func _make_node_element(parser: XMLParser):
 
 
 static func _make_node_element_end(parser: XMLParser) -> XMLNode:
-    var node: XMLNode = XMLNode.new()
+    var node := XMLNode.new()
 
     node.name = parser.get_node_name()
     node.attributes = {}
@@ -205,7 +208,7 @@ static func _get_attributes(parser: XMLParser) -> Dictionary:
 static func _cleanup_double_blankets(xml: PackedByteArray) -> PackedByteArray:
     # XMLParser is again "incorrect" and duplicates nodes due to double blank escapes
     # https://github.com/godotengine/godot/issues/81896#issuecomment-1731320027
-    var cleaned: PackedByteArray = PackedByteArray()
+    var cleaned := PackedByteArray()
 
     for byte in xml:
         if byte not in [9, 10, 13]: # [\t, \n, \r]
