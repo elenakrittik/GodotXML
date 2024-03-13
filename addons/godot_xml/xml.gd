@@ -153,6 +153,11 @@ static func _make_node(queue: Array[XMLNode], parser: XMLParser) -> Variant:
                 return
             XML._attach_node_data(queue.back(), parser)
             return
+        XMLParser.NODE_CDATA:
+            if queue.is_empty():
+                return
+            _attach_node_cdata(queue.back(), parser)
+            return
 
     return
 
@@ -187,6 +192,8 @@ static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
         # we therefore strip "blankets", resulting in only actual content slipping into .content
         node.content = parser.get_node_data().strip_edges().lstrip(" ").rstrip(" ")
 
+static func _attach_node_cdata(node: XMLNode, parser: XMLParser) -> void:
+    node.cdata.append(parser.get_node_name().strip_edges().lstrip(" ").rstrip(" "))
 
 static func _get_attributes(parser: XMLParser) -> Dictionary:
     var attrs: Dictionary = {}

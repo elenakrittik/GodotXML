@@ -11,6 +11,9 @@ var attributes: Dictionary = {}
 ## XML node content.
 var content: String = ""
 
+## XML node CDATA.
+var cdata: Array[String] = []
+
 ## Whether the XML node is an empty node (AKA standalone node).
 var standalone: bool = false
 
@@ -18,11 +21,12 @@ var standalone: bool = false
 var children: Array[XMLNode] = []
 
 var _node_props: Array[String]
-const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "standalone", "children"]
+const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
 ## Content is set as [code]__content__: content[/code].
+## CDATA is set as [code]__cdata__: [cdata, ...][/code].
 ## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
 ## Children are set as [code]children: {child_name: child_dict}[/code].
 func to_dict() -> Dictionary:
@@ -30,6 +34,7 @@ func to_dict() -> Dictionary:
 
     output["__name__"] = self.name
     output["__content__"] = self.content
+    output["__cdata__"] = self.cdata
     output["attrs"] = self.attributes
 
     var children_dict := {}
@@ -91,6 +96,7 @@ func _to_string():
         self.name,
         "{...}" if len(self.attributes) > 0 else "{}",
         '"..."' if len(self.content) > 0 else '""',
+        "[...]" if len(self.cdata) > 0 else "[]",
         self.standalone,
         "[...]" if len(self.children) > 0 else "[]"
     ]
@@ -144,12 +150,13 @@ func _initialize_node_properties() -> void:
 
 func _dump() -> String:
     var template := (
-        "<{node_name}{attributes}>{content}{children}</{node_name}>"
+        "<{node_name}{attributes}>{content}{cdata}{children}</{node_name}>"
         if not self.standalone else
         "<{node_name}{attributes}/>"
     )
     var attribute_string := ""
     var children_string := ""
+    var cdata_string = ""
 
     if not self.attributes.is_empty():
         attribute_string += " "
@@ -161,40 +168,49 @@ func _dump() -> String:
     for child: XMLNode in self.children:
         children_string += child._dump()
 
+    for cdata_content in self.cdata:
+        cdata_string += "<![CDATA[%s]]>" % cdata_content
+
     return template.format({
         "node_name": self.name,
         "attributes": attribute_string,
         "content": self.content,
+        "cdata": cdata_string,
         "children": children_string,
     })
 
 
 func _dump_pretty(indent_level: int, indent_length: int) -> String:
-        var template := (
-            "{indent}<{node_name}{attributes}>{content}{children}\n{indent}</{node_name}>"
-            if not self.standalone else
-            "{indent}<{node_name}{attributes}/>"
-        )
-        var indent_string := " ".repeat(indent_level * indent_length)
-        var indent_next_string := indent_string + " ".repeat(indent_length)
-        var attribute_string := ""
-        var content_string := "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
-        var children_string := ""
+    var template := (
+        "{indent}<{node_name}{attributes}>{content}{cdata}{children}\n{indent}</{node_name}>"
+        if not self.standalone else
+        "{indent}<{node_name}{attributes}/>"
+    )
+    var indent_string := " ".repeat(indent_level * indent_length)
+    var indent_next_string := indent_string + " ".repeat(indent_length)
+    var attribute_string := ""
+    var content_string := "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
+    var children_string := ""
+    var cdata_string := ""
 
-        if not self.attributes.is_empty():
-            attribute_string += " "
+    if not self.attributes.is_empty():
+        attribute_string += " "
 
-            for attribute_key in self.attributes:
-                var attribute_value := self.attributes.get(attribute_key)
-                attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
-    
-        for child: XMLNode in self.children:
-            children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
+        for attribute_key in self.attributes:
+            var attribute_value := self.attributes.get(attribute_key)
+            attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
-        return template.format({
-            "node_name": self.name,
-            "attributes": attribute_string,
-            "content": content_string,
-            "children": children_string,
-            "indent": indent_string,
-        })
+    for child: XMLNode in self.children:
+        children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
+
+    for cdata_content in self.cdata:
+        cdata_string += "\n" + indent_next_string + ("<![CDATA[%s]]>" % cdata_content)
+
+    return template.format({
+        "node_name": self.name,
+        "attributes": attribute_string,
+        "content": content_string,
+        "cdata": cdata_string,
+        "children": children_string,
+        "indent": indent_string,
+    })
