@@ -1,3 +1,25 @@
+# v2.0.0 -> v2.1.0
+
+## Features
+
+- Implement `XMLNode.dump_file`, `XMLNode.dump_buffer` and `XMLNode.dump_str`.
+- Implement support for CDATA nodes.
+
+## Bug Fixes
+
+- Only remove trailing blankets instead of all.
+- Concatenate all `NODE_TEXT` nodes' contents instead of respecting only the first one.
+
+## Deprecations
+
+- Deprecate `XML.dump_file`, `XML.dump_buffer` and `XML.dump_str`.
+
+## Internal Changes
+
+- Improve type safety across the codebase.
+- Improve documentation and README wording.
+- Miscellaneous code clean-ups.
+
 # v1.0.0 -> v2.0.0
 
 ## Breaking Changes
