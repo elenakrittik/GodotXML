@@ -151,11 +151,6 @@ func _initialize_node_properties() -> void:
 
 
 func _dump() -> String:
-    var template := (
-        "<{node_name}{attributes}>{content}{cdata}{children}</{node_name}>"
-        if not self.standalone else
-        "<{node_name}{attributes}/>"
-    )
     var attribute_string := ""
     var children_string := ""
     var cdata_string = ""
@@ -165,54 +160,58 @@ func _dump() -> String:
 
         for attribute_key in self.attributes:
             var attribute_value := self.attributes.get(attribute_key)
+
+            if attribute_value is String:
+                attribute_value = attribute_value.xml_escape(true)
+
             attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
     for child: XMLNode in self.children:
         children_string += child._dump()
 
     for cdata_content in self.cdata:
-        cdata_string += "<![CDATA[%s]]>" % cdata_content
+        cdata_string += "<![CDATA[%s]]>" % cdata_content.replace("]]>", "]]]]><![CDATA[>")
 
-    return template.format({
-        "node_name": self.name,
-        "attributes": attribute_string,
-        "content": self.content,
-        "cdata": cdata_string,
-        "children": children_string,
-    })
+    if self.standalone:
+        return "<" + self.name + attribute_string + "/>"
+    else:
+        return (
+            "<" + self.name + attribute_string + ">" +
+            self.content.xml_escape() + cdata_string + children_string +
+            "</" + self.name + ">"
+        )
 
 
 func _dump_pretty(indent_level: int, indent_length: int) -> String:
-    var template := (
-        "{indent}<{node_name}{attributes}>{content}{cdata}{children}\n{indent}</{node_name}>"
-        if not self.standalone else
-        "{indent}<{node_name}{attributes}/>"
-    )
     var indent_string := " ".repeat(indent_level * indent_length)
     var indent_next_string := indent_string + " ".repeat(indent_length)
     var attribute_string := ""
-    var content_string := "\n" + indent_next_string + self.content if not self.content.is_empty() else ""
+    var content_string := "\n" + indent_next_string + self.content.xml_escape() if not self.content.is_empty() else ""
     var children_string := ""
     var cdata_string := ""
 
     if not self.attributes.is_empty():
-        attribute_string += " "
-
         for attribute_key in self.attributes:
             var attribute_value := self.attributes.get(attribute_key)
-            attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
+
+            if attribute_value is String:
+                attribute_value = attribute_value.xml_escape(true)
+
+            attribute_string += ' {key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
     for child: XMLNode in self.children:
         children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
 
     for cdata_content in self.cdata:
-        cdata_string += "\n" + indent_next_string + ("<![CDATA[%s]]>" % cdata_content)
+        cdata_string += "\n" + indent_next_string + (
+            "<![CDATA[%s]]>" % cdata_content.replace("]]>", "]]]]>\n%s<![CDATA[>" % indent_next_string)
+        )
 
-    return template.format({
-        "node_name": self.name,
-        "attributes": attribute_string,
-        "content": content_string,
-        "cdata": cdata_string,
-        "children": children_string,
-        "indent": indent_string,
-    })
+    if self.standalone:
+        return indent_string + "<" + self.name + attribute_string + "/>"
+    else:
+        return (
+            indent_string + "<" + self.name + attribute_string + ">" +
+            content_string + cdata_string + children_string +
+            "\n" + indent_string + "</" + self.name + ">"
+        )
