@@ -160,8 +160,10 @@ func _dump() -> String:
 
         for attribute_key in self.attributes:
             var attribute_value := self.attributes.get(attribute_key)
+
             if attribute_value is String:
                 attribute_value = attribute_value.xml_escape(true)
+
             attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
     for child: XMLNode in self.children:
@@ -189,19 +191,21 @@ func _dump_pretty(indent_level: int, indent_length: int) -> String:
     var cdata_string := ""
 
     if not self.attributes.is_empty():
-        attribute_string += " "
-
         for attribute_key in self.attributes:
             var attribute_value := self.attributes.get(attribute_key)
+
             if attribute_value is String:
                 attribute_value = attribute_value.xml_escape(true)
-            attribute_string += '{key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
+
+            attribute_string += ' {key}="{value}"'.format({"key": attribute_key, "value": attribute_value})
 
     for child: XMLNode in self.children:
         children_string += "\n" + child.dump_str(true, indent_level + 1, indent_length)
 
     for cdata_content in self.cdata:
-        cdata_string += "\n" + indent_next_string + ("<![CDATA[%s]]>" % cdata_content.replace("]]>", "]]]]><![CDATA[>"))
+        cdata_string += "\n" + indent_next_string + (
+            "<![CDATA[%s]]>" % cdata_content.replace("]]>", "]]]]>\n%s<![CDATA[>" % indent_next_string)
+        )
 
     if self.standalone:
         return indent_string + "<" + self.name + attribute_string + "/>"
