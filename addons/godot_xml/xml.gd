@@ -189,7 +189,7 @@ static func _make_node_element_end(parser: XMLParser) -> XMLNode:
 static func _attach_node_data(node: XMLNode, parser: XMLParser) -> void:
     # XMLParser treats blank stuff between nodes as NODE_TEXT, which is unwanted
     # we therefore strip "blankets", resulting in only actual content slipping into .content
-    node.content += parser.get_node_data().strip_edges().xml_unescape()
+    node.content += parser.get_node_data().strip_edges()
 
 static func _attach_node_cdata(node: XMLNode, parser: XMLParser) -> void:
     node.cdata.append(parser.get_node_name().strip_edges())
@@ -199,7 +199,7 @@ static func _get_attributes(parser: XMLParser) -> Dictionary:
     var attr_count: int = parser.get_attribute_count()
 
     for attr_idx in range(attr_count):
-        attrs[parser.get_attribute_name(attr_idx)] = parser.get_attribute_value(attr_idx).xml_unescape()
+        attrs[parser.get_attribute_name(attr_idx)] = parser.get_attribute_value(attr_idx)
 
     return attrs
 
