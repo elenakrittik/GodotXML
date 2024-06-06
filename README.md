@@ -4,7 +4,7 @@ This addon adds support for manipulating XML data in Godot 4 with ease.
 
 > Supports Godot 4.0-4.2, and likely future versions too.
 
-> HINT: Migrating from v1? See [changelog](./CHANGELOG.md) for a complete list of breaking (and not) changes.
+> HINT: Migrating from v1? See [changelog](./CHANGELOG.md#v100---v200) for a complete list of breaking (and not) changes.
 
 ## Features
 
@@ -17,15 +17,21 @@ This addon adds support for manipulating XML data in Godot 4 with ease.
 
 ## Installation
 
-Search for the "GodotXML" addon on the asset library ([link](https://godotengine.org/asset-library/asset/1684)) or alternatively copy the `addons/` folder into your project's root.
+Search for the "GodotXML" addon on the asset library ([link](https://godotengine.org/asset-library/asset/1684))
+or alternatively copy the `addons/` folder into your project's root.
 
-## API
+## Usage
 
-All functions and attributes that are meant for use by you do not have `_` before their name
-and are also listed before any internal function.
+Use the `XML.parse_[buffer|string|file]` functions to parse XML into an `XMLDocument`, then use `XMLDocument.root`
+to get the root `XMLNode`, from which point use `XMLNode`'s properties to inspect a node and use the `XMLNode.dump_[buffer|string|file|]`
+functions to convert a node back into XML. It's that simple!
 
-All other functions and attributes are **not meant** to be used by you, though of course
-you can edit them as you like.
+## Version Guarantees
+
+All functions and attributes that are meant for use by you do not start with an `_` and are governed by the usual
+SemVer rules. Accordingly, all functions and attributes that *do* start with an `_`  are **not meant** to be used
+by you (and can change or be removed entirely even in patch versions, although that's usually not the case). If you
+*really* need to use something that is currently "private", open an issue and let's talk!
 
 ## Roadmap
 
