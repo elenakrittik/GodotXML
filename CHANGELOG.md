@@ -1,3 +1,13 @@
+# v2.1.0 -> v2.1.1
+
+## Bug Fixes
+
+- GodotXML now escapes nodes', attributes' and CDATAs' contents. This means that, e.g., doing `node.attributes.abc = '"Quoted"'`, dumping `node`, and parsing it back will now properly set `abc = '"Quoted"'`, instead of issuing a parsing error.
+
+## Miscellaneous
+
+- The README now better describes how to use the addon, as well as includes a "Version Guarantees" section.
+
 # v2.0.0 -> v2.1.0
 
 ## Features
