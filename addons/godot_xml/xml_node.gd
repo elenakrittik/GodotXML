@@ -93,7 +93,7 @@ func dump_str(
 
 
 func _to_string():
-    return "<XMLNode name=%s attributes=%s content=%s standalone=%s children=%s>" % [
+    return "<XMLNode name=%s attributes=%s content=%s cdata=%s standalone=%s children=%s>" % [
         self.name,
         "{...}" if len(self.attributes) > 0 else "{}",
         '"..."' if len(self.content) > 0 else '""',
