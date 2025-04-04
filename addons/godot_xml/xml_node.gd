@@ -29,7 +29,7 @@ const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata
 ## Content is set as [code]__content__: content[/code].
 ## CDATA is set as [code]__cdata__: [cdata, ...][/code].
 ## Attributes are set as [code]attrs: {attr_name: attr_value}[/code].
-## Children are set as [code]children: {child_name: child_dict}[/code].
+## Children are set as [code]children: [child_dict, ...][/code].
 func to_dict() -> Dictionary:
     var output := {}
 
