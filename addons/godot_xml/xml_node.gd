@@ -37,13 +37,10 @@ func to_dict() -> Dictionary:
     output["__content__"] = self.content
     output["__cdata__"] = self.cdata
     output["attrs"] = self.attributes
-
-    var children_dict := {}
-
-    for child in self.children:
-        children_dict[child.name] = child.to_dict()
-
-    output["children"] = children_dict
+    output["children"] = self.children.map(
+        func(child: XMLNode) -> Dictionary:
+            return child.to_dict()
+    )
 
     return output
 
