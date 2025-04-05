@@ -2,7 +2,7 @@
 
 This addon adds support for manipulating XML data in Godot 4 with ease.
 
-> Supports Godot 4.0-4.2, and likely future versions too.
+> Supports Godot 4.0-4.4, and likely future versions too.
 
 > HINT: Migrating from v1? See [changelog](./CHANGELOG.md#v100---v200) for a complete list of breaking (and not) changes.
 
