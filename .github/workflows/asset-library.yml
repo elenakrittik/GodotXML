@@ -18,3 +18,4 @@ jobs:
           username: ${{ secrets.ASSET_LIBRARY_USERNAME }}
           password: ${{ secrets.ASSET_LIBRARY_PASSWORD }}
           assetId: 1684
+          assetTemplate: ./.github/workflows/asset-template.json
