@@ -1,0 +1,13 @@
+{
+  "title": "GodotXML",
+  "description": "GodotXML - advanced XML support for Godot 4. Supports Godot 4.0+.\n\nPlease see our README on GitHub for more information, including the v1 -> v2 migration guide: https://github.com/elenakrittik/GodotXML",
+  "category_id": "6",
+  "godot_version": "4.0",
+  "version_string": "{{ context.release.tag_name }}",
+  "cost": "MIT",
+  "download_provider": "GitHub",
+  "download_commit": "{{ env.GITHUB_SHA }}",
+  "browse_url": "{{ context.repository.html_url }}",
+  "issues_url": "{{ context.repository.html_url }}/issues",
+  "icon_url": "https://raw.githubusercontent.com/elenakrittik/GodotXML/master/assets/icon.png"
+}

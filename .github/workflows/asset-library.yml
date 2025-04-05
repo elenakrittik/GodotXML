@@ -1,0 +1,20 @@
+name: "Push to asset lib"
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+jobs:
+  publish:
+    name: Publish new version to asset lib
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Godot Asset Lib
+        uses: deep-entertainment/godot-asset-lib-action@v0.6.0
+        with:
+          username: ${{ secrets.ASSET_LIBRARY_USERNAME }}
+          password: ${{ secrets.ASSET_LIBRARY_PASSWORD }}
+          assetId: 1684
