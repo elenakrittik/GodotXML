@@ -1,3 +1,9 @@
+# v2.1.1 -> v2.1.2
+
+## Bug Fixes
+
+- Include `cdata` contents in the return value of `XMLNode._to_string()`.
+
 # v2.1.0 -> v2.1.1
 
 ## Bug Fixes
