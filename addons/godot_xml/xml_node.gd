@@ -137,11 +137,19 @@ func _get_property_list() -> Array[Dictionary]:
 func _initialize_node_properties() -> void:
     var names_to_nodes := {}
 
+    # Adds children with same name in same Array
     for child: XMLNode in self.children:
-        if not child.name in names_to_nodes.keys():
-            names_to_nodes[child.name] = child
-        else:
-            names_to_nodes.erase(child.name)
+        var name: String = child.name
+
+        if not name in names_to_nodes.keys():
+            names_to_nodes[name] = []
+        
+        names_to_nodes[name].append(child)
+    
+    # Removes Arrays with more than one child
+    for name: String in names_to_nodes.keys():
+        if names_to_nodes[name].size() > 1:
+            names_to_nodes.erase(name)
 
     self._node_props = names_to_nodes.keys()
     self._node_props_initialized = true
