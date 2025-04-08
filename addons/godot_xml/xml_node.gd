@@ -134,9 +134,10 @@ func _get(property: StringName):
         property not in KNOWN_PROPERTIES
         and property in self._node_props
     ):
-        for child in self.children:
-            if child.name == property:
-                return child
+        var child: XMLNode = get_child_by_name(property)
+        
+        if child != null:
+            return child
 
 
 # Dotted access via editor
