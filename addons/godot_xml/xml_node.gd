@@ -46,6 +46,9 @@ func get_child_by_idx(idx: int) -> XMLNode:
     return children[idx]
 
 
+## Returns the first child of this [XMLNode] that matches its tag name with
+## the [param name] parameter.[br]
+## If such child isn't found, [code]null[/code] is returned.
 func get_child_by_name(name: String) -> XMLNode:
     for child: XMLNode in children:
         if child.name == name:
