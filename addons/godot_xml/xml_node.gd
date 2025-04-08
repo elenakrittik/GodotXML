@@ -24,8 +24,10 @@ var _node_props: Array
 var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
+
 func _child_idx_exists(idx: int) -> bool:
     return idx >= 0 and idx < children.size()
+
 
 func get_children_by_name(name: String) -> Array[XMLNode]:
     var result: Array[XMLNode] = []
@@ -36,11 +38,13 @@ func get_children_by_name(name: String) -> Array[XMLNode]:
     
     return result
 
+
 func get_child_by_idx(idx: int) -> XMLNode:
     if not _child_idx_exists(idx):
         return null
     
     return children[idx]
+
 
 func get_child_by_name(name: String) -> XMLNode:
     for child: XMLNode in children:
@@ -48,6 +52,7 @@ func get_child_by_name(name: String) -> XMLNode:
             return child
     
     return null
+
 
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
