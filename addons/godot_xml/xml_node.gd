@@ -24,6 +24,15 @@ var _node_props: Array
 var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
+func get_children_by_name(name: String) -> Array[XMLNode]:
+    var result: Array[XMLNode] = []
+    
+    for child: XMLNode in children:
+        if child.name == name:
+            result.append(child)
+    
+    return result
+
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
 ## Content is set as [code]__content__: content[/code].
