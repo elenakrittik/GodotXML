@@ -29,6 +29,8 @@ func _child_idx_exists(idx: int) -> bool:
     return idx >= 0 and idx < children.size()
 
 
+## Returns an [Array] with all the children of this [XMLNode]
+## that match their tag names with the [param name] parameter.[br]
 func get_children_by_name(name: String) -> Array[XMLNode]:
     var result: Array[XMLNode] = []
     
