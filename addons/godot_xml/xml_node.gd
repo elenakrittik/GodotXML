@@ -25,6 +25,8 @@ var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
 
+# Helper method to tell whether an index is valid for access in
+# the children property.
 func _child_idx_exists(idx: int) -> bool:
     return idx >= 0 and idx < children.size()
 
