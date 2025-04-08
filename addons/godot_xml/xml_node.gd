@@ -43,14 +43,11 @@ func get_child_by_idx(idx: int) -> XMLNode:
     return children[idx]
 
 func get_child_by_name(name: String) -> XMLNode:
-    var idx: int = -1
+    for child: XMLNode in children:
+        if child.name == name:
+            return child
     
-    for i: int in children.size():
-        if children[i].name == name:
-            idx = i
-            break
-    
-    return get_child_by_idx(idx)
+    return null
 
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
