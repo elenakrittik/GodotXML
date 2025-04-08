@@ -39,6 +39,11 @@ func get_children_by_name(name: String) -> Array[XMLNode]:
     return result
 
 
+## Returns the child of this [XMLNode] that has its index matching
+## the [param idx] parameter.[br]
+## If such child isn't found, [code]null[/code] is returned.[br]
+## Note that indexes start from [code]0[/code].[br]
+## If an invalid index is passed, [code]null[/code] is returned.
 func get_child_by_idx(idx: int) -> XMLNode:
     if not _child_idx_exists(idx):
         return null
