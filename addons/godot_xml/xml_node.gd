@@ -140,8 +140,7 @@ func _get(property: StringName):
     ):
         var child := self.get_child_by_name(property)
         
-        if child != null:
-            return child
+        return child
 
 
 # Dotted access via editor
