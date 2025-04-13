@@ -27,8 +27,7 @@ const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata
 
 # Helper method to tell whether an index is valid for access in
 # the children property.
-func _child_idx_exists(idx: int) -> bool:
-    return idx >= 0 and idx < children.size()
+func _child_idx_exists(idx: int) -> bool: return idx >= 0 and idx < children.size()
 
 
 ## Returns an [Array] of children [XMLNode]s whose tag matches [param name].
