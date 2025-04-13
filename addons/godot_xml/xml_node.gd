@@ -33,13 +33,7 @@ func _child_idx_exists(idx: int) -> bool:
 
 ## Returns an [Array] of children [XMLNode]s whose tag matches [param name].
 func get_children_by_name(name: String) -> Array[XMLNode]:
-    var result: Array[XMLNode] = []
-    
-    for child: XMLNode in children:
-        if child.name == name:
-            result.append(child)
-    
-    return result
+    return self.children.filter(func(child: XMLNode): return child.name == name)
 
 
 ## A safe alternative to directly indexing into [member XMLNode.children]. Returns the node at [param idx] or `null` if it's out of bounds.
