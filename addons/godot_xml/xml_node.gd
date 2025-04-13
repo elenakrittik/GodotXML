@@ -31,8 +31,7 @@ func _child_idx_exists(idx: int) -> bool:
     return idx >= 0 and idx < children.size()
 
 
-## Returns an [Array] with all the children of this [XMLNode]
-## that match their tag names with the [param name] parameter.[br]
+## Returns an [Array] of children [XMLNode]s whose tag matches [param name].
 func get_children_by_name(name: String) -> Array[XMLNode]:
     var result: Array[XMLNode] = []
     
@@ -43,11 +42,7 @@ func get_children_by_name(name: String) -> Array[XMLNode]:
     return result
 
 
-## Returns the child of this [XMLNode] that has its index matching
-## the [param idx] parameter.[br]
-## If such child isn't found, [code]null[/code] is returned.[br]
-## Note that indexes start from [code]0[/code].[br]
-## If an invalid index is passed, [code]null[/code] is returned.
+## A safe alternative to directly indexing into [member XMLNode.children]. Returns the node at [param idx] or `null` if it's out of bounds.
 func get_child_by_idx(idx: int) -> XMLNode:
     if not _child_idx_exists(idx):
         return null
@@ -55,9 +50,7 @@ func get_child_by_idx(idx: int) -> XMLNode:
     return children[idx]
 
 
-## Returns the first child of this [XMLNode] that matches its tag name with
-## the [param name] parameter.[br]
-## If such child isn't found, [code]null[/code] is returned.
+## Returns the first child [XMLNode] whose tag matches [param name].
 func get_child_by_name(name: String) -> XMLNode:
     for child: XMLNode in children:
         if child.name == name:
