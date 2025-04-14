@@ -25,11 +25,6 @@ var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
 
-# Helper method to tell whether an index is valid for access in
-# the children property.
-func _child_idx_exists(idx: int) -> bool: return idx >= 0 and idx < children.size()
-
-
 ## Returns an [Array] of children [XMLNode]s whose tag matches [param name].
 func get_children_by_name(name: String) -> Array[XMLNode]:
     return self.children.filter(func(child: XMLNode): return child.name == name)
@@ -37,7 +32,7 @@ func get_children_by_name(name: String) -> Array[XMLNode]:
 
 ## A safe alternative to directly indexing into [member XMLNode.children]. Returns the node at [param idx] or `null` if it's out of bounds.
 func get_child_by_idx(idx: int) -> XMLNode:
-    if not _child_idx_exists(idx):
+    if not (idx >= 0 and idx < children.size()):
         return null
     
     return children[idx]
