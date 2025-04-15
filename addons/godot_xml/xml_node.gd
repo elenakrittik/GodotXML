@@ -24,6 +24,29 @@ var _node_props: Array
 var _node_props_initialized: bool = false
 const KNOWN_PROPERTIES: Array[String] = ["name", "attributes", "content", "cdata", "standalone", "children"]
 
+
+## Returns an [Array] of children [XMLNode]s whose tag matches [param name].
+func get_children_by_name(name: String) -> Array[XMLNode]:
+    return self.children.filter(func(child: XMLNode): return child.name == name)
+
+
+## A safe alternative to directly indexing into [member XMLNode.children]. Returns the node at [param idx] or `null` if it's out of bounds.
+func get_child_by_idx(idx: int) -> XMLNode:
+    if not (idx >= 0 and idx < children.size()):
+        return null
+    
+    return children[idx]
+
+
+## Returns the first child [XMLNode] whose tag matches [param name].
+func get_child_by_name(name: String) -> XMLNode:
+    for child: XMLNode in children:
+        if child.name == name:
+            return child
+    
+    return null
+
+
 ## Converts this node (and all of it's children) into a [Dictionary].
 ## Name is set as [code]__name__: name[/code].
 ## Content is set as [code]__content__: content[/code].
@@ -109,9 +132,9 @@ func _get(property: StringName):
         property not in KNOWN_PROPERTIES
         and property in self._node_props
     ):
-        for child in self.children:
-            if child.name == property:
-                return child
+        var child := self.get_child_by_name(property)
+        
+        return child
 
 
 # Dotted access via editor
